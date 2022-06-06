@@ -14,6 +14,8 @@ class CreateReferenceInfosTable extends Migration
     public function up()
     {
         Schema::create('reference_infos', function (Blueprint $table) {
+
+            //yujh
             $table->id();
             $table->string('car_number')->unique();
             $table->string('owner');
