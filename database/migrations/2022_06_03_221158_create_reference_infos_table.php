@@ -15,7 +15,7 @@ class CreateReferenceInfosTable extends Migration
     {
         Schema::create('reference_infos', function (Blueprint $table) {
 
-            //yujh
+            //yujhjj
             $table->id();
             $table->string('car_number')->unique();
             $table->string('owner');
