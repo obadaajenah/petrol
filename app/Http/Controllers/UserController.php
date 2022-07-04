@@ -15,37 +15,37 @@ class UserController extends Controller
     $rules=[
         'phone_number'=>'required|max:100',
         'password'=> 'required|max:100',
-        
+
     ];
     $message=[
       'phone_number.reguired'=> 'The phone_number is required',
       'password.reguired'=> 'The  password is required',
-     
+
     ];
     $validator =Validator::make($request->all(),$rules,$message);
-    
- if($validator->fails()){
-    return $validator->errors();
-  }
+
+     if($validator->fails()){
+      return $validator->errors();
+      }
 
     //login
     $credentials = $request->only(['phone_number','password']);
     $token =Auth::guard('user-api')->attempt($credentials);
-    $user =Auth::guard('api')->user(); 
+    $user =Auth::guard('api')->user();
     $user->api_token = $token;
-    
+
       if(!$token)
        return response()->json("invalid data");
-      
-       
-      return response()->json(['user',$user]); 
 
 
-    }
-    public function logout(Request $request){                               
-        $token =$request->header('auth-token');                                        
-        if($token){                  
-            try{                                                          
+      return response()->json(['user',$user]);
+
+
+ }
+    public function logout(Request $request){
+        $token =$request->header('auth-token');
+        if($token){
+            try{
                 JWTAuth::setToken($token)->invalidate();
             }catch(\Tymon\JWTAuth\Exceptions\TokenInvalidException $e){
                return response()->json(["E000",'some things went wrongs']);
@@ -69,7 +69,7 @@ class UserController extends Controller
             'national_number'=> 'required',
             'car_number'=> 'required',
             'password'=> 'required'
-            
+
         ];
         $message=[
           'first_name.reguired'=> 'The first_name is required',
@@ -78,14 +78,14 @@ class UserController extends Controller
           'phone_number.unique'=> 'The phone_number should be unique',
           'car_number.reguired'=> 'The car_number is required',
           'password.reguired'=> 'The  password is required',
-         
+
         ];
         $validator =Validator::make($request->all(),$rules,$message);
-        
+
      if($validator->fails()){
         return $validator->errors();
       }
-      
+
         //register
         User::create([
         'first_name'=>$request->first_name,

@@ -15,10 +15,12 @@ class CreateReferenceInfosTable extends Migration
     {
         Schema::create('reference_infos', function (Blueprint $table) {
             $table->id();
+            $table->string('name_car');
             $table->string('car_number')->unique();
             $table->string('owner');
             $table->string('type');
             $table->string('category');
+            $table->decimal('amount');
             $table->date('manufacturing_year');
             $table->string('engine_number');
             $table->string('passengers_number');
