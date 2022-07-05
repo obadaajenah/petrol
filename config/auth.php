@@ -46,10 +46,18 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
+        'api1' => [
+            'driver' => 'jwt',
+            'provider' => 'admins',
+        ],
         'user-api' => [
             'driver' => 'jwt',
             'provider' => 'users',
        ],
+       'admin-api' => [
+        'driver' => 'jwt',
+        'provider' => 'admins',
+    ],
     ],
 
     /*
@@ -73,6 +81,10 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
+        ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\admin::class,
         ],
 
         // 'users' => [
