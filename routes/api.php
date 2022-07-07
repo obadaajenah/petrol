@@ -51,6 +51,8 @@ Route::post('register_user','AdminController@regester_user')->middleware('checkL
 
 Route::get('ff','AdminController@ff');
 
+Route::get('get_amount','AdminController@amount_of_tank');
+
 });
 
 

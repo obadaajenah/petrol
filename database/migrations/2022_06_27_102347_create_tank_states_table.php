@@ -16,7 +16,7 @@ class CreateTankStatesTable extends Migration
         Schema::create('tank_states', function (Blueprint $table) {
             $table->id();
             $table->foreignId('gasStation_id');
-            $table->decimal('amount');
+            $table->integer('amount')->max(20000);
             $table->foreignId('refill_id');
             $table->timestamps();
         });
