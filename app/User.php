@@ -12,7 +12,7 @@ class User extends Authenticatable implements JWTSubject
     use Notifiable;
 
     protected $fillable = [
-        'full_name','email', 'phone_number','national_number', 'password',
+        'full_name','email', 'phone_number','national_number', 'password','start_tur','created_at','updated_at'
     ];
 
 
@@ -37,5 +37,8 @@ class User extends Authenticatable implements JWTSubject
 
     public function info(){
         return $this->hasOne('App\Reference_info','owner');
+    }
+    public function send_mes(){
+        return $this->hasOne('App\send_mes','user_id');
     }
 }

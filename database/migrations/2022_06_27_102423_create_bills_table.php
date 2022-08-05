@@ -15,12 +15,10 @@ class CreateBillsTable extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
-            $table->integer('bill_number');
-            $table->decimal('amount');
-            $table->decimal('payment');
-            $table->date('bill_date');
-            $table->foreignId('user_id');
-            $table->foreignId('employee_id');
+            $table->integer('amount');
+            $table->integer('payment');
+            $table->string('user_id');
+            $table->string('employee_id');
             $table->timestamps();
         });
     }

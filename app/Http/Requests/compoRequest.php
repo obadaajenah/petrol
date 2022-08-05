@@ -1,32 +1,32 @@
 <?php
 
 namespace App\Http\Requests;
-
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-
-class RegisterRequest extends FormRequest
+class compoRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
     public function authorize()
     {
         return true;
     }
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
     public function rules()
     {
         return [
-            'full_name' => 'required|max:100',
-            'email' => 'required|unique:users,email',
-            'phone_number' => 'required|unique:users,phone_number',
-            'national_number' => 'required|unique:users,national_number',
-            'password' => 'required',
-            'name_car' => 'required|max:100',
-            'car_number' => 'required|max:100|unique:reference_infos,car_number',
-            'type' => 'required|max:100',
+            'complaint' => 'required|max:300',
         ];
     }
-
     public function massages(){
         return [];
     }

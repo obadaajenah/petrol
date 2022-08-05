@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTankStatesTable extends Migration
+class CreateSendMesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateTankStatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('tank_states', function (Blueprint $table) {
+        Schema::create('send_mes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('gasStation_id');
-            $table->integer('amount')->max(20000);
-            $table->foreignId('refill_id');
-            $table->date('start_full');
+            $table->integer('user_id');
+            $table->tinyInteger('varifty')->default(0);
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ class CreateTankStatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tank_states');
+        Schema::dropIfExists('send_mes');
     }
 }
