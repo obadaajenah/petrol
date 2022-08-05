@@ -2,22 +2,19 @@
 
 namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Model;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 
-class admin extends Authenticatable implements JWTSubject
+class empoloyee extends Authenticatable implements JWTSubject
 {
     use  Notifiable;
 
-
-    protected  $table = 'admins';
-    protected $fillable =['name','email','password'];
+    protected $fillable =['full_name','email','phone_number','password'];
     protected $hidden =['created_at','updated_at'];
-
 /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
@@ -37,9 +34,6 @@ class admin extends Authenticatable implements JWTSubject
     {
         return [];
     }
-
-
-
 
 
 }

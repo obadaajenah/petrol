@@ -50,6 +50,10 @@ return [
             'driver' => 'jwt',
             'provider' => 'admins',
         ],
+        'api2' => [
+            'driver' => 'jwt',
+            'provider' => 'empoloyees',
+        ],
         'user-api' => [
             'driver' => 'jwt',
             'provider' => 'users',
@@ -57,6 +61,10 @@ return [
        'admin-api' => [
         'driver' => 'jwt',
         'provider' => 'admins',
+    ],
+    'empoloyee-api' => [
+        'driver' => 'jwt',
+        'provider' => 'empoloyees',
     ],
     ],
 
@@ -85,6 +93,10 @@ return [
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\admin::class,
+        ],
+        'empoloyees' => [
+            'driver' => 'eloquent',
+            'model' => App\empoloyee::class,
         ],
 
         // 'users' => [
