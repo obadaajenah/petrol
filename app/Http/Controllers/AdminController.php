@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 use App\admin;
+use App\Tank_state;
 use App\Http\Requests\RegisterRequest;
 use App\User;
 use App\Reference_info;
+use App\Gas_station;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -153,6 +155,7 @@ class AdminController extends Controller
 
 public function ff(){
     $time =Carbon::now()->subDays(7);
+
      $users=User::with('info')->where('updated_at','>',$time)->get();
 
 //    foreach($users as $user){
@@ -160,5 +163,11 @@ public function ff(){
 //         // $user->updated_at =now();
 //     }
 }
+ public function amount_of_tank(){
+  $amounts=Tank_state::value('amount');
+  $parcent=$amounts / 20000.00 * 100 ;
+ return response()->json(['The parcent is',$parcent.'%','The amount of tank is ',$amounts]);
+
+ }
 
 }

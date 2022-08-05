@@ -25,7 +25,6 @@ class RegisterRequest extends FormRequest
             'car_number' => 'required|max:100|unique:reference_infos,car_number',
             'type' => 'required|max:100',
             'category' => 'required',
-          //  'amount' => 'required',
             'manufacturing_year' => 'required',
             'engine_number' => 'required',
             'passengers_number' => 'required',
