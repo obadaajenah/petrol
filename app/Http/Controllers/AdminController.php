@@ -18,6 +18,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
+////////////////sms//////////////////
+
+require 'vendor/autoload.php';
+
+use SMSGatewayMe\Client\ApiClient;
+use SMSGatewayMe\Client\Configuration;
+use SMSGatewayMe\Client\Api\MessageApi;
+use SMSGatewayMe\Client\Model\SendMessageRequest;
+
+/////////////////////////////////////
+
 
 class AdminController extends Controller
 {
@@ -99,7 +110,7 @@ class AdminController extends Controller
 
     #####################################################################################################################
    public function regester_user(RegisterRequest $request){
-    try{
+
     DB::beginTransaction();
 
 
@@ -112,6 +123,38 @@ class AdminController extends Controller
     'start_tur'=>$request->start_tur,
     'password'=>bcrypt($request->password),
     ]);
+
+
+////////////////////////sms/////////////////////////////////////////////////////////////////
+
+$phone=$request->input("phone_number");
+
+$pass=$request->input("password");
+
+///////////////////////////////////////////////////////////
+// Configure client
+$config = Configuration::getDefaultConfiguration();
+$config->setApiKey('Authorization', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsImlhdCI6MTY1OTUzMDI5NywiZXhwIjo0MTAyNDQ0ODAwLCJ1aWQiOjk1NDczLCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.kRydYmpnLSvjNuq_A3eXeVKAGlF2HtnX5g5Ew8uJsFw');
+$apiClient = new ApiClient($config);
+$messageClient = new MessageApi($apiClient);
+
+// Sending a SMS Message
+$sendMessageRequest1 = new SendMessageRequest([
+    'phoneNumber' => $phone,
+    'message' => "You have been successfully registered Your password is {$pass}",
+    'deviceId' => 128877
+]);
+$sendMessages = $messageClient->sendMessages([
+    $sendMessageRequest1
+]);
+print_r($sendMessages);
+
+/////////////sms//////////
+
+
+
+
+
 
 
     //register referanc info
@@ -132,15 +175,22 @@ class AdminController extends Controller
 
 
   ]);
+
+
+
   DB::commit();
   return response()->json(['saved successfully']);
 
-   }catch(\Exception $ex){
+   }/*
+   catch(\Exception $ex){
     DB::rollBack();
     return response()->json('problem',500);
    }
 
+
+
 }
+*/
 
 public function ff(){
     $time =Carbon::now()->subDays(7);
@@ -152,6 +202,35 @@ public function ff(){
    foreach($users as $user){
        if($user->updated_at < $time){
           $count=$count + 1 ;
+
+/////////////////////////sms////////////////////////////////////////////////////////
+
+   /*******************/
+
+    $phone=$user->phone_number;
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+// Configure client
+$config = Configuration::getDefaultConfiguration();
+$config->setApiKey('Authorization', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhZG1pbiIsImlhdCI6MTY1OTUzMDI5NywiZXhwIjo0MTAyNDQ0ODAwLCJ1aWQiOjk1NDczLCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.kRydYmpnLSvjNuq_A3eXeVKAGlF2HtnX5g5Ew8uJsFw');
+$apiClient = new ApiClient($config);
+$messageClient = new MessageApi($apiClient);
+
+// Sending a SMS Message
+$sendMessageRequest1 = new SendMessageRequest([
+    'phoneNumber' => $phone,
+    'message' => "You can move to receive your fuel",
+    'deviceId' => 128877
+]);
+$sendMessages = $messageClient->sendMessages([
+    $sendMessageRequest1
+]);
+print_r($sendMessages);
+
+////////////////////////sms//////////////////////////////
+
+
           send_mes::create([
             'user_id'=>$user->id,
             'varifty'=>0
