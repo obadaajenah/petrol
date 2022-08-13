@@ -18,9 +18,8 @@ class RegisterEmpRequest extends FormRequest
     {
         return [
             'full_name' => 'required|max:100',
-            'email' => 'required|unique:users,email',
-            'phone_number' => 'required|unique:users,phone_number',
-            'password' => 'required',
+
+            'job' => 'required',
         ];
     }
     public function massages(){

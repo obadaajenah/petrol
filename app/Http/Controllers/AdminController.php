@@ -59,7 +59,7 @@ class AdminController extends Controller
        return response()->json("invalid data");
 
 
-      return response()->json(['admin',$admin]);
+      return response()->json([$admin]);
 
 
 
@@ -85,11 +85,16 @@ class AdminController extends Controller
     public function get_all_user(){
         $users=User::with('info')->get();
         //$user=user::select('id','full_name','phone_number')->get();
-        return response()->json(['message'=>'This all users',$users]);
+        return response()->json($users);
     }
 
-    public function delete_user($id){
-        $user=user::destroy($id);
+    public function delete_user($user_id){
+       $user=user::find($user_id)->delete();
+
+        $refran=Reference_info::where('owner',$user_id)->delete();
+       // $users=User::with('info')->where('owner',$user_id)->first();
+      //  $users=Reference_info::with('user')->where('id',$user_id)->first();
+
         return response()->json(['message'=>'The user is delete']);
     }
     public function search_user($full_name){
@@ -101,8 +106,38 @@ class AdminController extends Controller
     return response()->json(['message'=>'The user is sort',$user]) ;
     }
     public function get_all_empoloyee(){
-      $empoloyees=empoloyee::select('id','full_name','phone_number');
-      return response()->json(['mesaage'=>'Those all empoloyees']);
+      $empoloyees=empoloyee::get();
+      return response()->json($empoloyees);
+
+    }
+
+    public function dellete_empm($empol_id){
+     $empo=empoloyee::find($empol_id)->delete();
+     return response()->json(['messages'=>'The empoloyee is delete']);
+
+    }
+
+
+    public function edit_user(request $request,$user_id ){
+        $user=user::find($user_id );
+        $refran=Reference_info::where('owner',$user_id)->first();
+        $user->full_name =$request->input('full_name',$user->full_name);
+        $user->email =$request->input('email',$user->email);
+        $user->phone_number =$request->input('phone_number',$user->phone_number);
+        $user->national_number =$request->input('national_number',$user->national_number);
+        $user->save();
+        $refran->type =$request->input('type',$user->type);
+        $refran->name_car =$request->input('name_car',$user->name_car);
+        $refran->car_number =$request->input('car_number',$user->car_number);
+        $refran->save();
+
+
+
+        return response()->json(['message'=> 'update the user']);
+
+
+
+
 
     }
 
@@ -112,7 +147,7 @@ class AdminController extends Controller
    public function regester_user(RegisterRequest $request){
 
     DB::beginTransaction();
-
+    try{
 
     //register  user
    $owner= User::create([
@@ -120,7 +155,6 @@ class AdminController extends Controller
     'email'=>$request->email,
     'phone_number'=>$request->phone_number,
     'national_number'=>$request->national_number,
-    'start_tur'=>$request->start_tur,
     'password'=>bcrypt($request->password),
     ]);
 
@@ -179,10 +213,11 @@ print_r($sendMessages);
 
 
   DB::commit();
-  return response()->json(['saved successfully']);
+  return response()->json([$owner, $refer]);
 
-   }/*
+   }
    catch(\Exception $ex){
+    echo ($ex);
     DB::rollBack();
     return response()->json('problem',500);
    }
@@ -190,15 +225,13 @@ print_r($sendMessages);
 
 
 }
-*/
+
 
 public function ff(){
     $time =Carbon::now()->subDays(7);
-   // $users=user::get()->all();
     $users=user::get();
     $count=0;
-    //$turns=user::value('updated_at');
-    // $users=User::with('info')->where('updated_at','>',$time)->get();
+
    foreach($users as $user){
        if($user->updated_at < $time){
           $count=$count + 1 ;
@@ -235,35 +268,30 @@ print_r($sendMessages);
             'user_id'=>$user->id,
             'varifty'=>0
           ]);
-           // $turns==now();
+
            $user->updated_at=now();
            $user->save();
         }
 
     }
-  //       $user->info ->amount ;
-    //      $user->updated_at =now();
    return $count;
-//
+
 
    }
 
 
-
-
     public function UserReciveMessage(){
-        // $users =user::with(['send_mes'=>function($q){
-        //     $q->where('varifty',0);
-        // }])->get();
-
-        $users =send_mes::with('user')->where('varifty',0)->get();
+      $users =send_mes::with('user')->where('varifty',0)->get();
+    /* $users =send_mes::with(['user'=>function ($q){
+        $q->select('full_name');
+    }])->get();*/
         return response()->json($users);
     }
 
 
 
 
-  public function soso(Request $request,$user_id,$empo_id ){
+  public function soso(Request $request,$user_id){
      $record=Tank_state::first();
      $record->amount;
       $user=User::find($user_id);
@@ -272,18 +300,19 @@ print_r($sendMessages);
       $send_mes = send_mes::where('user_id',$user_id)->first();
 
     //  return $sss=send_mes::value('varifty');
-     if($send_mes->varfity == 1){
+     if($send_mes->varifty == 1){
      $record->amount=$record->amount - $rafah;
      $record->save();
      $price=$rafah*3500;
-     $bbb=empoloyee::find($empo_id);
+     $bbb=empoloyee::find(27);
      $worker=$bbb->full_name;
        bill::create([
         'amount'=>$rafah,
         'payment'=>$price,
-        'user_id'=>$owner,
+        'user_id'=>$user->id,
         'employee_id'=>$worker,
        ]);
+       send_mes::where('user_id',$user_id)->delete();
      return response()->json(['message'=>'the bill is input']);
      }
 
@@ -298,7 +327,7 @@ print_r($sendMessages);
 
  public function amount_of_tank(){
   $amounts=Tank_state::value('amount');
-  $percentage=$amounts / 20000.00 * 100 ;
+  $percentage=(int)($amounts / 20000 * 100) ;
  return response()->json([$percentage,$amounts]);
  }
 
@@ -329,7 +358,7 @@ print_r($sendMessages);
 
  }
  public function compo(compoRequest $request){
-    complaint::create([
+         complaint::create([
         'complaint'=>$request->complaint,
 
     ]);
@@ -340,8 +369,25 @@ print_r($sendMessages);
  public function get_all_compo(){
    $compo= complaint::get()->all();
 
-   return response()->json(['message'=>'This all complaints ',$compo]);
+   return response()->json($compo);
  }
+ public function get_all_bill(){
+    $bill=bill::get();
+    return response()->json($bill);
+ }
+
+ public function acounting(){
+   $acos=bill::get();
+   $total_amount=0;
+   $total_price=0;
+    foreach($acos as $bill){
+    $total_amount= $total_amount+ $bill->amount;
+    $total_price= $total_price+ $bill->payment;
+
+    }
+    return response()->json(['message'=>'This is all amount and price',$total_amount,$total_price]);
+ }
+ 
 
 
 }

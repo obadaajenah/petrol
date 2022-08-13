@@ -13,7 +13,7 @@ class empoloyee extends Authenticatable implements JWTSubject
 {
     use  Notifiable;
 
-    protected $fillable =['full_name','email','phone_number','password'];
+    protected $fillable =['full_name','job'];
     protected $hidden =['created_at','updated_at'];
 /**
      * Get the identifier that will be stored in the subject claim of the JWT.

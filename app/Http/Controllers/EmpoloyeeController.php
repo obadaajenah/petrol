@@ -65,11 +65,21 @@ class EmpoloyeeController extends Controller
         public function register_empoloyee(RegisterEmpRequest $request){
           $empo=  empoloyee::create([
                 'full_name'=>$request->full_name,
-                'email'=>$request->email,
-                'phone_number'=>$request->phone_number,
-                'password'=>bcrypt($request->password),
+                'job'=>$request->job,
+
             ]);
-            return response()->json(['saved successfully']);
+            return response()->json([$empo]);
 
         }
+
+
+        public function edit_empoloyee(Request $request,$empoloyee_id){
+            $empol=  empoloyee::find($empoloyee_id);
+            $empol->update($request->all());
+            $empol->save();
+            return response()->json(['message'=>'updated the empoloyee',$empol]);
+
+
+           }
+
 }

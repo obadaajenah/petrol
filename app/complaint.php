@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class complaint extends Model
 {
-    protected $fillable =['complaint','created_at'];
+    protected $fillable =['complaint'];
+    protected $hidden =['updated_at','created_at'];
 }

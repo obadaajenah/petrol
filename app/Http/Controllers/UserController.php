@@ -4,9 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Tank_state;
+use App\Requestfeol;
+use App\Turnforfeol;
+use App\bill;
+use App\Http\Requests\ChangePassRequest;
+use Illuminate\Support\Facades\Hash;
+use App\empoloyee;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\validator;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -96,5 +104,91 @@ class UserController extends Controller
         'password'=>bcrypt($request->password),
         ]);
         return response()->json(['saved successfully']);
+    }
+
+
+
+    public function edit_password(Request $request,$user_id){
+     $user= user::find($user_id);
+     $user->update([bcrypt($request->password)]);
+     return response()->json(['message'=>'updated the password',$user]);
+
+
+    }
+
+
+
+     public function Request(Request $request,$user_id ){
+
+        Requestfeol::create([
+         'user'=>$user_id,
+         'amount'=>$request->amount,
+
+        ]);
+
+        Turnforfeol::create([
+          'user'=>$user_id,
+        ]);
+
+        return response()->json(['message'=>'your turn is input']);
+
+
+
+
+    }
+
+    public function turn(Request $request){
+        $record=Tank_state::first();
+        $record->amount;
+        $time =Carbon::now()->subDays(2);
+        $users=Turnforfeol::get();
+        $count=0;
+         foreach($users as $user){
+        if($user->updated_at < $time){
+         $count=$count+1;
+         $user->amount;
+         $record->amount=$record->amount -$request->amount ;
+        $record->save();
+        $price=$user->amount *5000;
+        $bbb=empoloyee::find(27);
+        $worker=$bbb->full_name;
+          bill::create([
+           'amount'=>$request->amount,
+           'payment'=>$price,
+           'user_id'=>$user->id,
+           'employee_id'=>$worker,
+          ]);
+        }
+
+         }
+         return $count;
+
+
+    }
+    public function get_bill(request $request,$user_id){
+        $bill=bill::get()->where('user_id',$user_id);
+        return response()->json(['message'=>'these all bill',$bill]);
+
+
+    }
+    public function  changePassword(ChangePassRequest $request)
+    {
+        $user_id = Auth::guard('user-api')->user()->id;
+        $user = User::find($user_id);
+
+        if (Hash::check($request->oldPassword, $user->password)) {
+            if ($request->newPassword == $request->oldPassword) {
+                return response()->json(['message' => ['new password  match old password ']], 450);
+            }
+            if ($request->newPassword != $request->confirmation_password) {
+                return response()->json(['message' => ['new password not match confirmation password']], 450);
+            }
+
+            $user->password = bcrypt($request->newPassword);
+            $user->save();
+            return response()->json(['message' => ['password changed successfully']]);
+        } else {
+            return response()->json(['message' => ['old password not match ']], 450);
+        }
     }
 }
